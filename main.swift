@@ -1,3 +1,30 @@
+
+//MR BEN HELP - ERROR HANDLING - DO IT IN ENUM
+enum TokenError : Error {
+    case unableToFindToken
+    case cannotDivideByZero
+}
+//do -> catch blocks
+//throw process
+//throw propagates an error down the stack
+//examples
+
+func badFunc(dividend: Int, divisor: Int) throws -> Int {
+    guard { divisor > 0 } else { throw TokenError.cannotDivideByZero }
+    return dividend / divisor
+}
+func example() {
+    do {
+        badFunc(dividend: 4, divisor: 0)
+    } catch {
+        print("Failed Because \(error)")
+    }
+}
+
+
+
+
+
 //defines data type used to break apart the equation
 indirect enum ParseUnit {
     case operate(op: Operating, leftBranch: ParseUnit, rightBranch: ParseUnit)
@@ -35,14 +62,15 @@ func tokenizer(_ input: String) -> Array<Any> {
     ]
 
     var parseArray : Array<Any> = []
-    
+    var tempVarBuilder : String = ""
     
     for (index, char) in input.enumerated() {
-        while char != " " {
+        if char != " " {
             if let token  = operators[char] {
                 parseArray.append(token)
+            }  else {
+                tempVarBuilder += char
             }
-           
         }
     }
     return parseArray
