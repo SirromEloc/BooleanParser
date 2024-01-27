@@ -16,7 +16,7 @@ enum Lexeme {
                         op: true)
                 
             } else { //returns non operators
-                return (String(match.1),
+                return (String(match.1.lowercased()),
                         line: match.0,
                         charactersUsed: match.0.count,
                         op: false)
@@ -86,9 +86,9 @@ indirect enum parseNode {
 
 func parse(from origin: [String]) -> parseNode {
     if origin.count == 1 { 
-        if origin.contains("⊤") {
+        if origin.contains("⊤") || origin.contains("true") {
             return parseNode.truey
-        } else if origin.contains("⊥") {
+        } else if origin.contains("⊥") || origin.contains("false") {
             return parseNode.falsey
         } else {
         return parseNode.variab(origin[0])
@@ -112,7 +112,7 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
 
-    if origin.contains("→") {
+    if origin.contains("→") || origin.contains("imply"){
         let i = origin.firstIndex(of: "→")!
         return parseNode.implies(
           parse(from: Array(origin[0 ..< i]) ),
@@ -120,7 +120,7 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
 
-    if origin.contains("⊕") {
+    if origin.contains("⊕") || origin.contains("xor"){
         let i = origin.firstIndex(of: "⊕")!
         return parseNode.xor(
           parse(from: Array(origin[0 ..< i]) ),
@@ -128,7 +128,7 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
 
-    if origin.contains("∨") {
+    if origin.contains("∨") || origin.contains("or"){
         let i = origin.firstIndex(of: "∨")!
         return parseNode.or(
           parse(from: Array(origin[0 ..< i]) ),
@@ -136,7 +136,7 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
 
-    if origin.contains("∧") {
+    if origin.contains("∧") || origin.contains("and"){
         let i = origin.firstIndex(of: "∧")!
         return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
@@ -144,7 +144,7 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
     
-    if origin.contains("¬") {
+    if origin.contains("¬") || origin.contains("not") {
         let i = origin.firstIndex(of: "¬")!
         return parseNode.negation(
           parse(from: Array(origin[i + 1 ..< origin.count]) )
