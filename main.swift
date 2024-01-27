@@ -71,7 +71,8 @@ func truthTableGen(from variables: [String]) -> [String: [Bool]]{
 }
 
 indirect enum parseNode {
-    case addition(parseNode, parseNode)
+    case negation(parseNode)
+    case and(parseNode, parseNode)
     case variab(String)
 
 }
@@ -81,14 +82,22 @@ func parse(from origin: [String]) -> parseNode {
         return parseNode.variab(origin[0])
     }
     
+
     if origin.contains("∧") {
         let i = origin.firstIndex(of: "∧")!
-        return parseNode.addition(
+        return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
     
+    if origin.contains("¬") {
+        let i = origin.firstIndex(of: "¬")!
+        return parseNode.negation(
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+
     return parseNode.variab("broken")
 }
 
@@ -104,8 +113,10 @@ func solve(_ tree: parseNode, with truthTable: [String : [Bool]], at index: Int)
     switch tree { //recursively goes down tree and returns bool value
     case .variab(let variableName):
         return truthTable[variableName]![index]
-    case .addition(let Left, let Right):
+    case .and(let Left, let Right):
         return solve(Left, with: truthTable, at: index) && solve(Right, with: truthTable, at: index)
+    case .negation(let Right):
+        return !solve(Right, with: truthTable, at: index)
     }
 }
 
@@ -133,7 +144,7 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
-        let line = " var  ∧  botot"
+        let line = " var  ∧  ¬botot"
         let (lexemes, variables) = try LexemeSource.lex(line: line)
         // print(lexemes,p variables)
         
