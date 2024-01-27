@@ -211,20 +211,23 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
-        let line = readLine()
-        let (lexemes, variables) = try LexemeSource.lex(line: line)
-        // print(lexemes,p variables)
-        
-        let tree = parse(from: lexemes) //makes parse tree
-        
-        let sortedVar = variables.sorted() 
-        let truthTable = truthTableGen(from: sortedVar) //generates starting values for variables
+        if let line = readLine() {
+            let (lexemes, variables) = try LexemeSource.lex(line: line)
+            // print(lexemes,p variables)
+            
+            let tree = parse(from: lexemes) //makes parse tree
+            
+            let sortedVar = variables.sorted() 
+            let truthTable = truthTableGen(from: sortedVar) //generates starting values for variables
 
-        let results = evaluate(tree, with: truthTable)
+            let results = evaluate(tree, with: truthTable)
 
-        print("\n" + line + "\n")
-        printTable(variables: sortedVar, table: truthTable, results: results)
-    } catch {
+            print("\n" + line + "\n")
+            printTable(variables: sortedVar, table: truthTable, results: results)
+        } else {
+            print("did not properly get input")
+        }
+      } catch {
         print("Failed because \(error).")
     }
 }
