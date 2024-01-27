@@ -73,6 +73,11 @@ func truthTableGen(from variables: [String]) -> [String: [Bool]]{
 indirect enum parseNode {
     case negation(parseNode)
     case and(parseNode, parseNode)
+    case or(parseNode, parseNode)
+    case xor(parseNode, parseNode)
+    case implies(parseNode, parseNode)
+    case equal(parseNode, parseNode)
+    case inequal(parseNode, parseNode)
     case variab(String)
 
 }
@@ -81,7 +86,46 @@ func parse(from origin: [String]) -> parseNode {
     if origin.count == 1 { //node endcase
         return parseNode.variab(origin[0])
     }
-    
+
+    if origin.contains("≠") {
+        let i = origin.firstIndex(of: "≠")!
+        return parseNode.inequal(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+
+    if origin.contains("=") {
+        let i = origin.firstIndex(of: "=")!
+        return parseNode.equal(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+
+    if origin.contains("→") {
+        let i = origin.firstIndex(of: "→")!
+        return parseNode.implies(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+
+    if origin.contains("⊕") {
+        let i = origin.firstIndex(of: "⊕")!
+        return parseNode.xor(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+
+    if origin.contains("∨") {
+        let i = origin.firstIndex(of: "∨")!
+        return parseNode.or(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
 
     if origin.contains("∧") {
         let i = origin.firstIndex(of: "∧")!
@@ -113,6 +157,16 @@ func solve(_ tree: parseNode, with truthTable: [String : [Bool]], at index: Int)
     switch tree { //recursively goes down tree and returns bool value
     case .variab(let variableName):
         return truthTable[variableName]![index]
+    case .inequal(let Left, let Right):
+        return solve(Left, with: truthTable, at: index) != solve(Right, with: truthTable, at: index)
+    case .equal(let Left, let Right):
+        return solve(Left, with: truthTable, at: index) == solve(Right, with: truthTable, at: index)
+    case .implies(let Left, let Right):
+        return (solve(Left, with: truthTable, at: index) == false) || (solve(Left, with: truthTable, at: index) && solve(Right, with: truthTable, at: index))
+    case .xor(let Left, let Right):
+        return solve(Left, with: truthTable, at: index) != solve(Right, with: truthTable, at: index)
+    case .or(let Left, let Right):
+        return solve(Left, with: truthTable, at: index) || solve(Right, with: truthTable, at: index)
     case .and(let Left, let Right):
         return solve(Left, with: truthTable, at: index) && solve(Right, with: truthTable, at: index)
     case .negation(let Right):
