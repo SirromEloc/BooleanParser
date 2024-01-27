@@ -8,7 +8,7 @@ enum Lexeme {
 
     static func nextLexeme(from line: Substring) throws ->
       (lexeme: String, line: Substring, charactersUsed: Int, op: Bool) {
-        if let match = try /\s*([a-z]+|[¬∧∨⊕→=≠]+)\s*/.firstMatch(in: line) { //finds first lexeme
+        if let match = try /\s*([a-z]+|[¬∧∨⊕→=≠⊤⊥]+)\s*/.firstMatch(in: line) { //finds first lexeme
             if match.1.contains(/([¬∧∨⊕→=≠])/) { //checks if lexeme is an operator and returns
                 return (String(match.1),
                         line: match.0,
@@ -78,14 +78,23 @@ indirect enum parseNode {
     case implies(parseNode, parseNode)
     case equal(parseNode, parseNode)
     case inequal(parseNode, parseNode)
+    case true
+    case false
     case variab(String)
 
 }
 
 func parse(from origin: [String]) -> parseNode {
-    if origin.count == 1 { //node endcase
+    if origin.count == 1 { 
+        if origin.contains("⊤") {
+            return parseNode.true
+        } else if origin.contains("⊥") {
+            return parseNode.false
+        } else {
         return parseNode.variab(origin[0])
+        }
     }
+
 
     if origin.contains("≠") {
         let i = origin.firstIndex(of: "≠")!
@@ -171,6 +180,10 @@ func solve(_ tree: parseNode, with truthTable: [String : [Bool]], at index: Int)
         return solve(Left, with: truthTable, at: index) && solve(Right, with: truthTable, at: index)
     case .negation(let Right):
         return !solve(Right, with: truthTable, at: index)
+    case .true:
+        return true
+    case .false:
+        return false
     }
 }
 
@@ -198,7 +211,7 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
-        let line = " var  ∧  ¬botot"
+        let line = " var  ∧  ⊥"
         let (lexemes, variables) = try LexemeSource.lex(line: line)
         // print(lexemes,p variables)
         
