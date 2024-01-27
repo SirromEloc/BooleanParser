@@ -158,7 +158,7 @@ func parse(from origin: [String]) -> parseNode {
     }
 
     if origin.contains("∧") {
-        let i = origin.firstIndex(of: "∧") {
+        let i = origin.firstIndex(of: "∧")!
         return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
