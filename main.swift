@@ -78,8 +78,8 @@ indirect enum parseNode {
     case implies(parseNode, parseNode)
     case equal(parseNode, parseNode)
     case inequal(parseNode, parseNode)
-    case true
-    case false
+    case truey
+    case falsey
     case variab(String)
 
 }
@@ -87,9 +87,9 @@ indirect enum parseNode {
 func parse(from origin: [String]) -> parseNode {
     if origin.count == 1 { 
         if origin.contains("⊤") {
-            return parseNode.true
+            return parseNode.truey
         } else if origin.contains("⊥") {
-            return parseNode.false
+            return parseNode.falsey
         } else {
         return parseNode.variab(origin[0])
         }
@@ -180,9 +180,9 @@ func solve(_ tree: parseNode, with truthTable: [String : [Bool]], at index: Int)
         return solve(Left, with: truthTable, at: index) && solve(Right, with: truthTable, at: index)
     case .negation(let Right):
         return !solve(Right, with: truthTable, at: index)
-    case .true:
+    case .truey:
         return true
-    case .false:
+    case .falsey:
         return false
     }
 }
