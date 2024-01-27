@@ -158,17 +158,14 @@ func parse(from origin: [String]) -> parseNode {
     }
 
     if origin.contains("∧") {
-        if let i = origin.firstIndex(of: "∧") {
-        } else {
-            let i = origin.firstIndex(of: "∧")
-        }
+        let i = origin.firstIndex(of: "∧") {
         return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
     if origin.contains("and"){
-        if let i = origin.firstIndex(of: "and")!
+        let i = origin.firstIndex(of: "and")!
         return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
