@@ -211,7 +211,7 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
-        let line = " var  ∧  ⊥"
+        let line = readLine()
         let (lexemes, variables) = try LexemeSource.lex(line: line)
         // print(lexemes,p variables)
         
