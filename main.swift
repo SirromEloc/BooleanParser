@@ -9,7 +9,7 @@ enum Lexeme {
     static func nextLexeme(from line: Substring) throws ->
       (lexeme: String, line: Substring, charactersUsed: Int, op: Bool) {
         if let match = try /\s*([a-z]+|[¬∧∨⊕→=≠⊤⊥]+)\s*/.firstMatch(in: line) { //finds first lexeme
-            if match.1.contains(/([¬∧∨⊕→=≠])/) { //checks if lexeme is an operator and returns
+            if match.1.contains(/([¬∧∨⊕→=≠⊤⊥])/) { //checks if lexeme is an operator and returns
                 return (String(match.1),
                         line: match.0,
                         charactersUsed: match.0.count,
