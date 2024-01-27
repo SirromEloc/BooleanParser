@@ -29,7 +29,7 @@ enum Lexeme {
 }
 
 struct LexemeSource {
-    let lexeme: Lexeme
+    let lexeme: String
     let text: String
     static var allLexemes: [String] = []
     static var onlyVariables: [String] = []
@@ -41,7 +41,8 @@ struct LexemeSource {
             let (lexeme, text, charactersUsed, op) = try Lexeme.nextLexeme(from: workingLine) //iterates through lexemes
 
             allLexemes.append(lexeme) //collects all lexemes
-            if !op || lexeme != "and" || lexeme != "or" || lexeme != "xor" || lexeme != "imply" || lexeme != "true" || lexeme != "false" || lexeme != "not" { //adds non operators to array for truth table
+            print(lexeme)
+            if !op && lexeme != "and" && lexeme != "or" && lexeme != "xor" && lexeme != "imply" && lexeme != "true" && lexeme != "false" && lexeme != "not" { //adds non operators to array for truth table
                 onlyVariables.append(lexeme)
             }
             
