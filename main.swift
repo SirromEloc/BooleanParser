@@ -8,8 +8,8 @@ enum Lexeme {
 
     static func nextLexeme(from line: Substring) throws ->
       (lexeme: String, line: Substring, charactersUsed: Int, op: Bool) {
-        if let match = try /\s*([a-z]+|[\+]+)\s*/.firstMatch(in: line) { //finds first lexeme
-            if match.1.contains(/(\+)/) { //checks if lexeme is an operator and returns
+        if let match = try /\s*([a-z]+|[∧]+)\s*/.firstMatch(in: line) { //finds first lexeme
+            if match.1.contains(/(\∧)/) { //checks if lexeme is an operator and returns
                 return (String(match.1),
                         line: match.0,
                         charactersUsed: match.0.count,
@@ -81,8 +81,8 @@ func parse(from origin: [String]) -> parseNode {
         return parseNode.variab(origin[0])
     }
     
-    if origin.contains("+") {
-        let i = origin.firstIndex(of: "+")!
+    if origin.contains("∧") {
+        let i = origin.firstIndex(of: "∧")!
         return parseNode.addition(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
@@ -133,7 +133,7 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
-        let line = " var  +  botot"
+        let line = " var  ∧  botot"
         let (lexemes, variables) = try LexemeSource.lex(line: line)
         // print(lexemes,p variables)
         
