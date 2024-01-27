@@ -95,7 +95,7 @@ func parse(from origin: [String]) -> parseNode {
         }
     }
 
-
+    //my extremely unoptimal way to tokenize
     if origin.contains("≠") {
         let i = origin.firstIndex(of: "≠")!
         return parseNode.inequal(
@@ -112,40 +112,77 @@ func parse(from origin: [String]) -> parseNode {
         )  
     }
 
-    if origin.contains("→") || origin.contains("imply"){
+    if origin.contains("→") {
         let i = origin.firstIndex(of: "→")!
         return parseNode.implies(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
+    if origin.contains("imply") {
+        let i = origin.firstIndex(of: "imply")!
+        return parseNode.implies(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
 
-    if origin.contains("⊕") || origin.contains("xor"){
+    if origin.contains("⊕") {
         let i = origin.firstIndex(of: "⊕")!
         return parseNode.xor(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
+    if origin.contains("xor") {
+        let i = origin.firstIndex(of: "xor")!
+        return parseNode.xor(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
 
-    if origin.contains("∨") || origin.contains("or"){
+    if origin.contains("∨") {
         let i = origin.firstIndex(of: "∨")!
         return parseNode.or(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
+    if origin.contains("or"){
+        let i = origin.firstIndex(of: "or")!
+        return parseNode.or(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
 
-    if origin.contains("∧") || origin.contains("and"){
-        let i = origin.firstIndex(of: "∧")!
+    if origin.contains("∧") {
+        if let i = origin.firstIndex(of: "∧") {
+        } else {
+            let i = origin.firstIndex(of: "∧")
+        }
+        return parseNode.and(
+          parse(from: Array(origin[0 ..< i]) ),
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+    if origin.contains("and"){
+        if let i = origin.firstIndex(of: "and")!
         return parseNode.and(
           parse(from: Array(origin[0 ..< i]) ),
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
     }
     
-    if origin.contains("¬") || origin.contains("not") {
+    if origin.contains("¬") {
         let i = origin.firstIndex(of: "¬")!
+        return parseNode.negation(
+          parse(from: Array(origin[i + 1 ..< origin.count]) )
+        )  
+    }
+    if origin.contains("not") {
+        let i = origin.firstIndex(of: "not")!
         return parseNode.negation(
           parse(from: Array(origin[i + 1 ..< origin.count]) )
         )  
@@ -211,6 +248,7 @@ func printTable(variables: [String], table: [String: [Bool]], results: [Bool]) {
 
 func main() {
     do {
+        print("Input your Boolean Equation:")
         if let line = readLine() {
             let (lexemes, variables) = try LexemeSource.lex(line: line)
             // print(lexemes,p variables)
